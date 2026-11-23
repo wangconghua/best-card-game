@@ -1,0 +1,298 @@
+/* Ember Court — a court of ember-spirits: deep browns, banked reds, gold leaf.
+   The table is a single column: the Duchess above, the log and End Turn in
+   the middle, the Kindler below. Cards are legible first, pretty second. */
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body { height: 100%; }
+
+body {
+  background: radial-gradient(1200px 700px at 50% -10%, #4a2415 0%, #241209 45%, #160b06 100%);
+  color: #f3e6c8;
+  font-family: Georgia, 'Times New Roman', serif;
+  overflow: hidden;
+}
+
+#app {
+  height: 100vh;
+  max-width: 1280px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  padding: 8px 14px;
+  gap: 6px;
+}
+
+/* ---------- Top bar ---------- */
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 2px 6px;
+  border-bottom: 1px solid rgba(217, 165, 33, 0.45);
+}
+.brand {
+  font-size: 22px;
+  letter-spacing: 3px;
+  color: #f5cd5e;
+  text-shadow: 0 0 14px rgba(226, 72, 61, 0.65);
+  font-weight: bold;
+}
+.turn-label { font-size: 15px; color: #e8d5a4; font-style: italic; }
+.icon-btn {
+  background: #2c1a10;
+  color: #f3e6c8;
+  border: 1px solid #8a6a2f;
+  border-radius: 6px;
+  padding: 4px 10px;
+  cursor: pointer;
+  font-size: 13px;
+}
+.icon-btn:hover { background: #3d2415; }
+
+/* ---------- Sides of the table ---------- */
+.side {
+  display: flex;
+  align-items: stretch;
+  gap: 14px;
+  min-height: 0;
+}
+.rival-side { flex: 0 0 200px; }
+.player-side { flex: 1 1 auto; max-height: 420px; }
+.player-side { flex: 1 1 auto; }
+
+.portrait {
+  flex: 0 0 168px;
+  text-align: center;
+  border: 1px solid rgba(217, 165, 33, 0.5);
+  border-radius: 10px;
+  padding: 10px 6px;
+  background: linear-gradient(180deg, #33200f, #1d110a);
+}
+.rival-portrait { cursor: pointer; }
+.rival-portrait:hover { border-color: #e2483d; box-shadow: 0 0 12px rgba(226, 72, 61, 0.45); }
+.portrait-glyph { font-size: 34px; line-height: 1.1; }
+.portrait-name { font-size: 17px; font-weight: bold; color: #f5cd5e; margin-top: 4px; }
+.portrait-sub { font-size: 12px; color: #c9a86a; font-style: italic; }
+
+.side-info {
+  flex: 0 0 190px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 6px;
+}
+.life-wrap { display: flex; align-items: center; gap: 8px; }
+.life-num { font-size: 20px; font-weight: bold; color: #ff8a7a; min-width: 58px; }
+.life-bar {
+  flex: 1;
+  height: 12px;
+  background: #3a1a12;
+  border: 1px solid #6b3a24;
+  border-radius: 6px;
+  overflow: hidden;
+}
+.life-fill { height: 100%; background: linear-gradient(90deg, #e2483d, #ff7a5c); }
+.shield { font-size: 14px; color: #6db3f2; font-weight: bold; }
+.ember { font-size: 14px; color: #f5cd5e; }
+.pips { letter-spacing: 1px; font-size: 11px; line-height: 1.4; color: #5a4026; }
+.pip.lit { color: #ff9a3d; text-shadow: 0 0 6px #ff7a3d; }
+.deck-count { font-size: 12px; color: #b99b62; }
+
+/* ---------- Boards and hands ---------- */
+.board {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  border: 1px dashed rgba(217, 165, 33, 0.35);
+  border-radius: 10px;
+  background: rgba(0, 0, 0, 0.22);
+  padding: 8px;
+  min-height: 92px;
+}
+.board-empty { color: #8d7448; font-style: italic; font-size: 14px; }
+
+.hand-backs { display: flex; align-items: center; gap: 4px; }
+.card-back {
+  width: 30px; height: 44px;
+  border-radius: 5px;
+  background: linear-gradient(160deg, #5a2c14, #2c130a);
+  border: 1px solid #d9a521;
+  color: #d9a521;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 15px;
+}
+
+.hand {
+  flex: 1;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 10px;
+  min-height: 152px;
+}
+
+/* ---------- Cards ---------- */
+.card {
+  position: relative;
+  width: 118px;
+  height: 156px;
+  border-radius: 10px;
+  padding: 24px 8px 8px;
+  background: linear-gradient(180deg, #2e1c11, #1c0f08);
+  border: 2px solid #6b4a26;
+  text-align: center;
+  cursor: default;
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
+  display: flex;
+  flex-direction: column;
+}
+.card.playable { cursor: pointer; border-color: #f5cd5e; box-shadow: 0 0 12px rgba(245, 205, 94, 0.35); }
+.card.playable:hover { transform: translateY(-8px); }
+.card.selected { transform: translateY(-8px); outline: 2px solid #fff; }
+.card.house-flame { border-top: 6px solid #e2483d; }
+.card.house-tide { border-top: 6px solid #2f7fd0; }
+.card.house-thorn { border-top: 6px solid #3d9e57; }
+.card.house-star { border-top: 6px solid #d9a521; }
+
+.card-cost {
+  position: absolute;
+  top: 5px; left: 5px;
+  width: 26px; height: 26px;
+  border-radius: 50%;
+  background: #d9a521;
+  color: #241203;
+  font-weight: bold;
+  font-size: 16px;
+  line-height: 26px;
+  border: 1px solid #f5cd5e;
+}
+.card-key {
+  position: absolute;
+  top: 5px; right: 5px;
+  width: 20px; height: 20px;
+  border-radius: 4px;
+  background: rgba(0, 0, 0, 0.55);
+  color: #c9a86a;
+  font-size: 12px;
+  font-weight: bold;
+  line-height: 20px;
+  border: 1px solid rgba(217, 165, 33, 0.5);
+}
+.card.playable .card-key { color: #f5cd5e; border-color: #f5cd5e; }
+.card-symbol { font-size: 24px; line-height: 1.1; }
+.card-name { font-size: 14px; font-weight: bold; color: #fdf3d0; margin-top: 2px; min-height: 26px; }
+.card-house { font-size: 11px; color: #c9a86a; letter-spacing: 1px; }
+.card-text { font-size: 11px; line-height: 1.35; color: #e8d5a4; font-style: italic; margin-top: 2px; flex: 1 1 auto; display: flex; align-items: center; justify-content: center; }
+.card-stats {
+  display: flex; justify-content: center; gap: 14px;
+  font-size: 15px; font-weight: bold;
+  padding-top: 2px;
+}
+.card-stats span:first-child { color: #ff9a7a; }
+.card-stats span:last-child { color: #8fd0a0; }
+
+/* ---------- Creatures on the table ---------- */
+.creature {
+  width: 128px;
+  min-height: 84px;
+  border-radius: 10px;
+  padding: 8px 8px 6px;
+  background: linear-gradient(180deg, #2e1c11, #1c0f08);
+  border: 2px solid #6b4a26;
+  text-align: center;
+}
+.creature.house-flame { border-top: 5px solid #e2483d; }
+.creature.house-tide { border-top: 5px solid #2f7fd0; }
+.creature.house-thorn { border-top: 5px solid #3d9e57; }
+.creature.house-star { border-top: 5px solid #d9a521; }
+.creature.ready { cursor: pointer; border-color: #f5cd5e; box-shadow: 0 0 10px rgba(245, 205, 94, 0.4); }
+.creature.ready:hover { transform: translateY(-3px); }
+.creature.selected { outline: 2px solid #fff; box-shadow: 0 0 14px rgba(255, 255, 255, 0.5); }
+.creature-symbol { font-size: 24px; line-height: 1; }
+.creature-name { font-size: 13px; font-weight: bold; color: #fdf3d0; margin-top: 2px; }
+.creature-stats { display: flex; justify-content: center; gap: 12px; font-size: 15px; font-weight: bold; margin-top: 2px; }
+.creature-stats span:first-child { color: #ff9a7a; }
+.creature-stats span:last-child { color: #8fd0a0; }
+.creature-rest { font-size: 11px; color: #b99b62; font-style: italic; }
+
+/* ---------- Middle strip: log + End Turn ---------- */
+.middle {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex: 0 0 56px;
+}
+.log {
+  flex: 1;
+  height: 56px;
+  overflow: hidden;
+  font-size: 12.5px;
+  line-height: 1.45;
+  color: #cbb37e;
+  border-left: 3px solid rgba(217, 165, 33, 0.5);
+  padding-left: 10px;
+}
+.log-line { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.middle-actions { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; }
+.hint { font-size: 12.5px; color: #e8d5a4; font-style: italic; max-width: 560px; text-align: right; }
+.end-turn {
+  background: linear-gradient(180deg, #b03a28, #7a2418);
+  color: #ffe9c9;
+  border: 1px solid #f5cd5e;
+  border-radius: 8px;
+  padding: 8px 26px;
+  font-size: 16px;
+  font-family: inherit;
+  cursor: pointer;
+  letter-spacing: 1px;
+}
+.end-turn:hover:not(:disabled) { filter: brightness(1.15); }
+.end-turn:disabled { opacity: 0.4; cursor: default; }
+
+/* ---------- Overlays ---------- */
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(10, 5, 3, 0.82);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+}
+.overlay.show { display: flex; }
+.panel {
+  width: 620px;
+  max-width: 92vw;
+  background: linear-gradient(180deg, #2e1a0e, #1a0e07);
+  border: 2px solid #d9a521;
+  border-radius: 14px;
+  padding: 28px 34px;
+  text-align: center;
+  box-shadow: 0 0 60px rgba(226, 72, 61, 0.35);
+}
+.panel-eyebrow { color: #c9a86a; letter-spacing: 3px; font-size: 13px; text-transform: uppercase; }
+.panel h1 {
+  font-size: 44px;
+  color: #f5cd5e;
+  margin: 10px 0 14px;
+  text-shadow: 0 0 22px rgba(226, 72, 61, 0.6);
+}
+.panel-text { font-size: 15.5px; line-height: 1.55; color: #e8d5a4; margin-bottom: 12px; }
+.panel-text.small { font-size: 13px; color: #b99b62; }
+.big-btn {
+  background: linear-gradient(180deg, #d9a521, #a67c14);
+  color: #241203;
+  border: none;
+  border-radius: 10px;
+  padding: 13px 38px;
+  font-size: 19px;
+  font-family: inherit;
+  font-weight: bold;
+  cursor: pointer;
+  margin: 8px 0 14px;
+  letter-spacing: 1px;
+}
+.big-btn:hover { filter: brightness(1.12); }
